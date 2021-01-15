@@ -1,0 +1,20 @@
+**结点合并
+// 按照name和age依次match，这两者完全相同的被match到同一集合。*表示当前match到的一个n的集合。
+MATCH (n:证券公司)
+WITH n.name AS name, n.age AS age, COLLECT(n) AS nodelist, COUNT(*) AS count
+WHERE count > 1
+CALL apoc.refactor.mergeNodes(nodelist) YIELD node
+RETURN node
+
+MATCH (n:个人)
+WITH n.name AS name, n.学历 AS xl, n.年龄 as nl, n.性别 as xb, COLLECT(n) AS nodelist, COUNT(*) AS count
+WHERE count > 1
+CALL apoc.refactor.mergeNodes(nodelist) YIELD node
+RETURN node
+
+MATCH (n)
+WHERE labels(n) in [["证券公司"], ["券商"]]
+WITH n.name AS name, COLLECT(n) AS nodelist, COUNT(*) AS count
+WHERE count > 1
+CALL apoc.refactor.mergeNodes(nodelist) YIELD node
+RETURN node
